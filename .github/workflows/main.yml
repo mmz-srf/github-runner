@@ -30,4 +30,4 @@ jobs:
         push: true
         pull: true
         tags: |
-          srfonline/docker-github-runner:latest
+          srfonline/github-runner:latest
