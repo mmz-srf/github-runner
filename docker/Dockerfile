@@ -27,13 +27,6 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-
-RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
-    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | sudo apt-key add - && \
-    sudo apt-get update && \
-    sudo apt-get -y install buildah && \
-    apt-get clean
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -53,6 +46,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
+
+RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
+    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | sudo apt-key add - && \
+    sudo apt-get update && \
+    sudo apt-get -y install buildah && \
+    apt-get clean
+
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
