@@ -52,7 +52,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 # install latest composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 # copy php installation script
-COPY --chmod=+x install-php.sh /install-php.sh
+COPY install-php.sh /install-php.sh
+RUN chmod +x /install-php.sh
 
 # install buildah
 RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
@@ -91,6 +92,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && apt-get clean
 
 # entrypoints
-COPY --chmod=+x entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
