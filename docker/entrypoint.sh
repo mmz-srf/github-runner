@@ -4,6 +4,9 @@ if [[ "$@" == "bash" ]]; then
     exec $@
 fi
 
+# install php
+/install-php.sh
+
 if [[ -z $RUNNER_NAME ]]; then
     echo "RUNNER_NAME environment variable is not set, using '${HOSTNAME}'."
     export RUNNER_NAME=${HOSTNAME}
