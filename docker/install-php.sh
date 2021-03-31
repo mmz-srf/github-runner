@@ -23,6 +23,8 @@ apt install -y php${PHP_VERSION} \
                php${PHP_VERSION}-xml \
                php${PHP_VERSION}-curl \
                php${PHP_VERSION}-mysqli \
+               php${PHP_VERSION}-mbstring \
+               php${PHP_VERSION}-intl \
                unzip \
                imagemagick
 
