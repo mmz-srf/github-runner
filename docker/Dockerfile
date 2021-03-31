@@ -47,26 +47,18 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
+# install buildah
 RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | sudo apt-key add - && \
     sudo apt-get update && \
     sudo apt-get -y install buildah && \
     apt-get clean
 
-
+# supervisor config to keep github-runner running
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
-# Install Docker CLI
-RUN curl -fsSL https://get.docker.com -o- | sh && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
-
-# Install Docker-Compose
-RUN curl -L -o /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
-    chmod +x /usr/local/bin/docker-compose
-
+# install git
 RUN cd /tmp && \
     curl -sL -o git.tgz \
     https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
@@ -81,6 +73,7 @@ RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
 
 WORKDIR /home/runner
 
+# github runner installation
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
     && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
     && tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
@@ -90,7 +83,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-
+# entrypoints
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
