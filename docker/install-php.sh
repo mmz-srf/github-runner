@@ -28,6 +28,4 @@ apt install -y php${PHP_VERSION} \
                unzip \
                imagemagick
 
-composer require staabm/annotate-pull-request-from-checkstyle
-
 apt clean
