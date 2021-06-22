@@ -95,6 +95,10 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
+# set python3 as default
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+
 # entrypoints
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
