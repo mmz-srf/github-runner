@@ -74,11 +74,11 @@ RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontai
 
 
 # install python 3.9.5
-RUN wget https://www.python.org/ftp/python/3.9.2/Python-3.9.5.tgz && \
+RUN wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz && \
     tar xvf Python-3.9.5.tgz && \
     cd Python-3.9.5/ && \
     ./configure --enable-optimizations && \
-    sudo make altinstall
+    make altinstall
 
 
 # supervisor config to keep github-runner running
