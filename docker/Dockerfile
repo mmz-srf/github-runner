@@ -81,6 +81,14 @@ RUN wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz && \
     make altinstall
 
 
+# install python 3.8.10
+RUN wget https://www.python.org/ftp/python3.8.10/Python-3.8.10.tgz && \
+    tar xvf Python-3.8.10.tgz && \
+    cd Python-3.8.10/ && \
+    ./configure --enable-optimizations && \
+    make altinstall
+
+
 # supervisor config to keep github-runner running
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
