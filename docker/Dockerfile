@@ -45,7 +45,17 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         gettext \
         liblttng-ust0 \
         libcurl4-openssl-dev \
-        openssh-client && \
+        openssh-client \
+        software-properties-common \
+        libnss3-dev \
+        libgdbm-dev \
+        libncurses5-dev \
+        libssl-dev \
+        libffi-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libbz2-dev && \
+
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -61,6 +71,15 @@ RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontai
     sudo apt-get update && \
     sudo apt-get -y install buildah && \
     apt-get clean
+
+
+# install python 3.9.5
+RUN wget https://www.python.org/ftp/python/3.9.2/Python-3.9.5.tgz && \
+    tar xvf Python-3.9.5.tgz && \
+    cd Python-3.9.5/ && \
+    ./configure --enable-optimizations && \
+    sudo make altinstall
+
 
 # supervisor config to keep github-runner running
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
