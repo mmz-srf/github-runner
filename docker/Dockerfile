@@ -68,7 +68,7 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY install-php.sh /install-php.sh
 RUN chmod +x /install-php.sh
 
-# install buildah
+# install buildah and podman
 RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | sudo apt-key add - && \
     sudo apt-get update && \
@@ -80,6 +80,7 @@ RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontai
         libseccomp2/buster-backports \
         podman \
         && \
+    echo "alias docker='podman'" >> /root/.bashrc && \
     apt-get clean
 
 
