@@ -28,6 +28,9 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+RUN DEBIAN_FRONTEND=noninteractive \
+    echo "\n#Buster Backports, not proud about it\ndeb http://deb.debian.org/debian buster-backports main contrib non-free" >> /etc/apt/sources.list
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -69,7 +72,14 @@ RUN chmod +x /install-php.sh
 RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | sudo apt-key add - && \
     sudo apt-get update && \
-    sudo apt-get -y install buildah && \
+    sudo apt-get -y install \
+        buildah \
+        fuse-overlayfs \
+        slirp4netns \
+        containernetworking-plugins \
+        libseccomp2/buster-backports \
+        podman \
+        && \
     apt-get clean
 
 
