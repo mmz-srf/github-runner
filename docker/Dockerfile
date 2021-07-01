@@ -28,6 +28,9 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+RUN DEBIAN_FRONTEND=noninteractive \
+    echo "\n#Buster Backports, not proud about it\ndeb http://deb.debian.org/debian buster-backports main contrib non-free" >> /etc/apt/sources.list
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -45,7 +48,17 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         gettext \
         liblttng-ust0 \
         libcurl4-openssl-dev \
-        openssh-client && \
+        openssh-client \
+        software-properties-common \
+        libnss3-dev \
+        libgdbm-dev \
+        libncurses5-dev \
+        libssl-dev \
+        libffi-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libbz2-dev && \
+
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -55,12 +68,37 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY install-php.sh /install-php.sh
 RUN chmod +x /install-php.sh
 
-# install buildah
+# install buildah and podman
 RUN echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | sudo apt-key add - && \
     sudo apt-get update && \
-    sudo apt-get -y install buildah && \
+    sudo apt-get -y install \
+        buildah \
+        fuse-overlayfs \
+        slirp4netns \
+        containernetworking-plugins \
+        libseccomp2/buster-backports \
+        podman \
+        && \
+    echo "alias docker='podman'" >> /root/.bashrc && \
     apt-get clean
+
+
+# install python 3.9.5
+RUN wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz && \
+    tar xvf Python-3.9.5.tgz && \
+    cd Python-3.9.5/ && \
+    ./configure --enable-optimizations && \
+    make altinstall
+
+
+# install python 3.8.10
+RUN wget https://www.python.org/ftp/python/3.8.10/Python-3.8.10.tgz && \
+    tar xvf Python-3.8.10.tgz && \
+    cd Python-3.8.10/ && \
+    ./configure --enable-optimizations && \
+    make altinstall
+
 
 # supervisor config to keep github-runner running
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
