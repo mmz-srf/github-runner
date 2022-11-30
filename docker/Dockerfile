@@ -58,7 +58,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         libreadline-dev \
         libsqlite3-dev \
         libbz2-dev && \
-
+        python3-pip && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -134,7 +134,8 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && apt-get clean
 
 # set python3 as default
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
+    update-alternatives --install /usr/bin/pip python /usr/bin/pip3 1
 
 
 # entrypoints
